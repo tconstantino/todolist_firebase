@@ -18,7 +18,7 @@ body {
 }
 
 .startHidden {
-    display: none;
+    display: none !important;
 }
 
 h3 {
@@ -59,4 +59,15 @@ p {
 
 .alternative {
     background-color: #44c;
+}
+
+.inputAlign {
+    display: flex;
+    justify-content: space-between;
+}
+
+#register, #access {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
 }

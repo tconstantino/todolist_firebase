@@ -27,7 +27,8 @@ function toggleToAccess() {
 
 // Simplifica a exibição de elementos da página
 function showItem(item) {
-    item.style.display = 'block';
+    item.style.display = 'flex';
+    item.classList.remove('startHidden');
 }
 
 // Simplifica a remoção de elementos da página
