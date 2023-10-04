@@ -19,10 +19,19 @@
             <form id="authForm">
                 <h3 id="authFormTitle">Acesse sua conta para continuar</h3>
 
-                <label for="email">E-mail: </label>
-                <input type="email" placeholder="E-mail" id="email">
-                <label for="password">Senha: </label>
-                <input type="password" placeholder="Senha" id="password">
+                <div>
+                    <label for="email">E-mail: </label>
+                    <input type="email" placeholder="E-mail" id="email">
+                </div>
+                <div>
+                    <label for="password">Senha: </label>
+                    <input type="password" placeholder="Senha" id="password">
+                </div>
+                <div id="authFormPassordConfirm" class="startHidden">
+                    <label for="password" >Confirme sua senha: </label>
+                    <input type="password" placeholder="Confirme sua senha" id="password" >
+                </div>
+                
 
                 <button type="submit" id="authFormSubmit">Acessar</button>
             </form>
@@ -40,5 +49,8 @@
             </p>
         </div>
     </div>
+
+    <!-- Programação em JavaScript -->
+    <script src="./js/utils.js"></script>
 </body>
 </html>
