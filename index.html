@@ -6,6 +6,8 @@
     <title>TodoList Firebase</title>
     <link rel="shortcut icon" href="./img/todoListFavicon.png" type="image/x-icon">
     <link rel="stylesheet" href="./css/styles.css">
+
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js"></script>
 </head>
 <body>
     <div id="app">
@@ -29,7 +31,7 @@
                 </div>
                 <div id="authFormPassordConfirm" class="inputAlign startHidden">
                     <label for="password" >Confirme sua senha: </label>
-                    <input type="password" placeholder="Confirme sua senha" id="password" >
+                    <input type="password" placeholder="Confirme sua senha" id="passwordConfirm" >
                 </div>
                 
 
@@ -52,5 +54,7 @@
 
     <!-- Programação em JavaScript -->
     <script src="./js/utils.js"></script>
+    <script type="module" src="./js/firebase.js"></script>
+    <script type="module" src="./js/auth.js"></script>
 </body>
 </html>
