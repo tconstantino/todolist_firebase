@@ -1,76 +1,102 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TodoList Firebase</title>
-    <link rel="shortcut icon" href="./img/todoListFavicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="./css/styles.css">
+    <link
+      rel="shortcut icon"
+      href="./img/todoListFavicon.png"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="./css/styles.css" />
 
-    <script type="module" src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js"></script>
-</head>
-<body>
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js"
+    ></script>
+  </head>
+  <body>
     <div id="app">
-        <!-- Logotipo do TodoList Firebase -->
-        <div class="center">
-            <img src="./img/todoList.png">
+      <!-- Logotipo do TodoList Firebase -->
+      <div class="center">
+        <img src="./img/todoList.png" />
+      </div>
+
+      <!-- Feedback de carregamento (Loading) -->
+      <div id="loading">
+        <img src="./img/loading.gif" alt="Animação de carregamento" />
+      </div>
+
+      <!-- Conteúdo destinado para usuários não autenticados -->
+      <div id="auth" class="center">
+        <!-- Formulário de autenticação -->
+        <form id="authForm">
+          <h3 id="authFormTitle">Acesse sua conta para continuar</h3>
+
+          <div class="inputAlign">
+            <label for="email">E-mail: </label>
+            <input type="email" placeholder="E-mail" id="email" />
+          </div>
+          <div class="inputAlign">
+            <label for="password">Senha: </label>
+            <input type="password" placeholder="Senha" id="password" />
+          </div>
+          <div
+            id="authFormPassordConfirm"
+            class="inputAlign startHidden"
+            hidden
+          >
+            <label for="password">Confirme sua senha: </label>
+            <input
+              type="password"
+              placeholder="Confirme sua senha"
+              id="passwordConfirm"
+            />
+          </div>
+
+          <button type="submit" id="authFormSubmit">Acessar</button>
+        </form>
+
+        <!-- Alternar o formulário de autenticação para cadastro de novas contas -->
+        <p id="register">
+          Não possui uma conta?
+          <button onclick="toggleToRegister()" class="alternative">
+            Cadastrar uma nova conta
+          </button>
+        </p>
+
+        <!-- Alternar o formulário de autenticação para o acesso de contas já existentes -->
+        <p id="access" class="startHidden" hidden>
+          Já possui uma conta?
+          <button onclick="toggleToAccess()" class="alternative">
+            Acesse a sua conta
+          </button>
+        </p>
+      </div>
+
+      <!-- Conteúdo destinado para usuários autenticados -->
+      <div id="userContent">
+        <hr />
+        <div id="userInfo" class="center">
+          <p>Usuário está autenticado</p>
+          <p id="userEmail"></p>
+          <p id="emailVerified"></p>
+          <div id="sendEmailVerificationPanel">
+            <button class="alternative" onclick="enviarEmailDeVerificacao()">
+              Verificar e-mail
+            </button>
+          </div>
+          <button id="signOutButton" class="alternative" onclick="deslogar()">
+            Sair
+          </button>
         </div>
-
-        <!-- Feedback de carregamento (Loading) -->
-        <div id="loading">
-            <img src="./img/loading.gif" alt="Animação de carregamento" >
-        </div>
-
-        <!-- Conteúdo destinado para usuários não autenticados -->
-        <div id="auth" class="center">
-            <!-- Formulário de autenticação -->
-            <form id="authForm">
-                <h3 id="authFormTitle">Acesse sua conta para continuar</h3>
-
-                <div class="inputAlign">
-                    <label for="email">E-mail: </label>
-                    <input type="email" placeholder="E-mail" id="email">
-                </div>
-                <div class="inputAlign">
-                    <label for="password">Senha: </label>
-                    <input type="password" placeholder="Senha" id="password">
-                </div>
-                <div id="authFormPassordConfirm" class="inputAlign startHidden" hidden>
-                    <label for="password" >Confirme sua senha: </label>
-                    <input type="password" placeholder="Confirme sua senha" id="passwordConfirm" >
-                </div>
-                
-
-                <button type="submit" id="authFormSubmit">Acessar</button>
-            </form>
-
-            <!-- Alternar o formulário de autenticação para cadastro de novas contas -->
-            <p id="register">
-                Não possui uma conta?
-                <button onclick="toggleToRegister()" class="alternative">Cadastrar uma nova conta</button>
-            </p>
-
-            <!-- Alternar o formulário de autenticação para o acesso de contas já existentes -->
-            <p id="access" class="startHidden" hidden>
-                Já possui uma conta?
-                <button onclick="toggleToAccess()" class="alternative">Acesse a sua conta</button>
-            </p>
-        </div>
-
-        <!-- Conteúdo destinado para usuários autenticados -->
-        <div id="userContent">
-            <hr>
-            <div id="userInfo" class="center">
-                <p>Usuário está autenticado</p>
-                <p id="userEmail"></p>
-                <button id="signOutButton" class="alternative" onclick=deslogar()>Sair</button>
-            </div>
-        </div>
+      </div>
     </div>
 
     <!-- Programação em JavaScript -->
     <script src="./js/utils.js"></script>
     <script type="module" src="./js/firebase.js"></script>
     <script type="module" src="./js/auth.js"></script>
-</body>
+  </body>
 </html>

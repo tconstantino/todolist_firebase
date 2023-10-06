@@ -3,7 +3,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
-  signOut
+  signOut,
+  sendEmailVerification,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
 const auth = getAuth();
@@ -31,9 +32,8 @@ authForm.onsubmit = async (event) => {
       console.log(user);
     }
   } catch (error) {
-    console.log("Erro ao realizar operação");
-    console.log(error);
     alert(error.message);
+  } finally {
     hideItem(loading);
   }
 };
@@ -42,7 +42,7 @@ authForm.onsubmit = async (event) => {
 onAuthStateChanged(auth, (user) => {
   hideItem(loading);
 
-  if(user) {
+  if (user) {
     showUserContent(user);
   } else {
     showAuth();
@@ -52,8 +52,26 @@ onAuthStateChanged(auth, (user) => {
 // Função que permite o usuário sair da conta dele
 deslogar = async () => {
   try {
-    await signOut(auth)
-  } catch(error) {
+    await signOut(auth);
+  } catch (error) {
     alert(error.message);
   }
-}
+};
+
+// Função que permite o usuário fazer a verificação do e-mail dele
+enviarEmailDeVerificacao = async () => {
+  showItem(loading);
+  try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    await sendEmailVerification(user);
+
+    alert(`E-mail de verificação foi enviado para ${user.email}!
+    \nVerifique sua caixa de entrada`);
+  } catch (error) {
+    alert(error.message);
+  } finally {
+    hideItem(loading);
+  }
+};

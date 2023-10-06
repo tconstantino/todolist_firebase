@@ -8,6 +8,8 @@ var loading = document.getElementById("loading");
 var authContent = document.getElementById("auth");
 var userContent = document.getElementById("userContent");
 var userEmail = document.getElementById("userEmail");
+var emailVerified = document.getElementById("emailVerified");
+var sendEmailVerificationPanel = document.getElementById("sendEmailVerificationPanel");
 
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
@@ -53,6 +55,14 @@ var deslogar;
 
 // Mostrar conteúdo para usuários autenticados
 function showUserContent(user) {
+  console.log(user);
+  if (user.emailVerified) {
+    emailVerified.innerHTML = "E-mail verificado";
+    hideItem(sendEmailVerificationPanel);
+  } else {
+    emailVerified.innerHTML = "E-mail não verificado";
+    showItem(sendEmailVerificationPanel);
+  }
   userEmail.innerHTML = user.email;
   hideItem(authContent);
   showItem(userContent);
@@ -66,3 +76,6 @@ function showAuth() {
   hideItem(userContent);
   showItem(authContent);
 }
+
+// Variável que a função de sendEmailVerification do firebase
+var enviarEmailDeVerificacao;
