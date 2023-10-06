@@ -27,21 +27,21 @@ authForm.onsubmit = async (event) => {
   const passwordConfirm = authForm.passwordConfirm.value;
 
   event.preventDefault();
-
+  let context;
   try {
     if (authForm.authFormSubmit.innerHTML == "Acessar") {
+      context = 'autenticar';
       await signInWithEmailAndPassword(auth, email, password);
     } else {
+      context = 'cadastrar';
       if (password !== passwordConfirm) {
         throw new Error("Senha e Confirmação da senha estão diferentes!");
       }
 
       const user = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("Cadastro realizado com sucesso");
-      console.log(user);
     }
   } catch (error) {
-    alert(error.message);
+    showError(`Falha ao ${context}`, error);
   } finally {
     hideItem(loading);
   }
@@ -63,7 +63,7 @@ deslogar = async () => {
   try {
     await signOut(auth);
   } catch (error) {
-    alert(error.message);
+    showError(`Falha ao deslogar`, error);
   }
 };
 
@@ -78,7 +78,7 @@ enviarEmailDeVerificacao = async () => {
       `E-mail de verificação foi enviado para ${user.email}!\nVerifique sua caixa de entrada`
     );
   } catch (error) {
-    alert(error.message);
+    showError(`Falha ao enviar e-mail de verificação`, error);
   } finally {
     hideItem(loading);
   }
@@ -94,7 +94,7 @@ enviarEmailDeResetDeSenha = async () => {
       `Caso tenha conta cadastrada, um e-mail de redefinição de senha enviado para ${email}`
     );
   } catch (error) {
-    alert(error.message);
+    showError(`Falha ao enviar e-mail de recuperação de senha`, error);
   } finally {
     hideItem(loading);
   }
@@ -107,8 +107,7 @@ loginComGoogle = async () => {
     const googleProvider = new GoogleAuthProvider();
     await signInWithRedirect(auth, googleProvider);
   } catch (error) {
-    console.log(error);
-    alert(error.message);
+    showError(`Falha ao autenticar com Google`, error);
   } finally {
     hideItem(loading);
   }
@@ -121,7 +120,7 @@ loginComFacebook = async () => {
     const facebookAuthProvider = new FacebookAuthProvider();
     await signInWithRedirect(auth, facebookAuthProvider);
   } catch (error) {
-    alert(error.message);
+    showError(`Falha ao autenticar com Facebook`, error);
   } finally {
     hideItem(loading);
   }
@@ -134,7 +133,7 @@ loginComGithub = async () => {
     const githubAuthProvider = new GithubAuthProvider();
     await signInWithPopup(auth, githubAuthProvider);
   } catch (error) {
-    alert(error.message);
+    showError(`Falha ao autenticar com Github`, error);
   } finally {
     hideItem(loading);
   }
@@ -154,13 +153,14 @@ atualizarNomeUsuario = async () => {
         displayName: novoNome,
       });
     } catch (error) {
-      alert(error.message);
+      showError(`Falha ao atualizar nome do usuário`, error);
     } finally {
       hideItem(loading);
     }
   }
 };
 
+// Função que permite a exclusão da conta do usuário
 excluirConta = async () => {
   var confirmation = confirm("Deseja realmente excluir sua conta?");
 
@@ -170,7 +170,7 @@ excluirConta = async () => {
       await deleteUser(auth.currentUser);
       alert('Sua conta foi excluída com sucesso');
     } catch (error) {
-      alert(error.message);
+      showError(`Falha ao excluir conta`, error);
     } finally {
       hideItem(loading);
     }

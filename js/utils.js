@@ -105,3 +105,21 @@ var atualizarNomeUsuario;
 
 // Variável que recebe a função de excluir conta de usuário no firebase
 var excluirConta;
+
+// Objeto de mapeamento de erros
+var errorMap = {
+    'auth/invalid-email': 'E-mail e/ou senha inválidos',
+    'auth/wrong-password': 'E-mail e/ou senha inválidos',
+    'auth/weak-password': 'Senha deve ter pelo menos 6 caracteres',
+    'auth/email-already-in-use': 'E-mail já está em uso por outra conta',
+    'auth/popup-closed-by-user': 'O popup de autenticação foi fechado antes da operação ser concluída',
+};
+
+// Função que centraliza e traduz os erros no firebase
+function showError(context, error) {
+    console.log(error);
+
+    const mensagemDeErro = error.code ? errorMap[error.code] : error.message;
+
+    alert(`${context}: ${mensagemDeErro}`);
+}
