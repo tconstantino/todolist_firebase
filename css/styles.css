@@ -92,3 +92,7 @@ p {
     height: 40px;
     border-radius: 100%;
 }
+
+.danger {
+    background-color: #c44;
+}

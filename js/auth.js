@@ -11,7 +11,8 @@ import {
   GoogleAuthProvider,
   FacebookAuthProvider,
   GithubAuthProvider,
-  updateProfile
+  updateProfile,
+  deleteUser,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
 const auth = getAuth();
@@ -49,7 +50,7 @@ authForm.onsubmit = async (event) => {
 // Função que centraliza e trata a autenticação
 onAuthStateChanged(auth, (user) => {
   hideItem(loading);
-  console.log(user)
+  console.log(user);
   if (user) {
     showUserContent(user);
   } else {
@@ -106,7 +107,7 @@ loginComGoogle = async () => {
     const googleProvider = new GoogleAuthProvider();
     await signInWithRedirect(auth, googleProvider);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     alert(error.message);
   } finally {
     hideItem(loading);
@@ -141,18 +142,37 @@ loginComGithub = async () => {
 
 // Função que permite atualizar nomes de usuários
 atualizarNomeUsuario = async () => {
-  const novoNome = prompt('Informe um novo nome de usuário.', userName.innerHTML);
-  if(novoNome) {
+  const novoNome = prompt(
+    "Informe um novo nome de usuário.",
+    userName.innerHTML
+  );
+  if (novoNome) {
     showItem(loading);
-    try{
+    try {
       userName.innerHTML = novoNome;
       await updateProfile(auth.currentUser, {
-        displayName: novoNome
+        displayName: novoNome,
       });
-    } catch(error) {
+    } catch (error) {
       alert(error.message);
     } finally {
       hideItem(loading);
     }
   }
-}
+};
+
+excluirConta = async () => {
+  var confirmation = confirm("Deseja realmente excluir sua conta?");
+
+  if (confirmation) {
+    showItem(loading);
+    try {
+      await deleteUser(auth.currentUser);
+      alert('Sua conta foi excluída com sucesso');
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      hideItem(loading);
+    }
+  }
+};

@@ -102,3 +102,6 @@ var loginComGithub;
 
 // Variável que recebe a função de atualizar nome do usuário no firebase
 var atualizarNomeUsuario;
+
+// Variável que recebe a função de excluir conta de usuário no firebase
+var excluirConta;
