@@ -9,7 +9,12 @@ var authContent = document.getElementById("auth");
 var userContent = document.getElementById("userContent");
 var userEmail = document.getElementById("userEmail");
 var emailVerified = document.getElementById("emailVerified");
-var sendEmailVerificationPanel = document.getElementById("sendEmailVerificationPanel");
+var sendEmailVerificationPanel = document.getElementById(
+  "sendEmailVerificationPanel"
+);
+var passwordReset = document.getElementById("passwordReset");
+var userImg = document.getElementById("userImg");
+var userName = document.getElementById("userName")
 
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
@@ -19,6 +24,7 @@ function toggleToRegister() {
   hideItem(register);
   showItem(access);
   showItem(passwordConfirm);
+  hideItem(passwordReset);
 }
 
 // Alterar formulário para o acesso de contas já existentes
@@ -29,25 +35,19 @@ function toggleToAccess() {
   hideItem(access);
   hideItem(passwordConfirm);
   showItem(register);
+  showItem(passwordReset);
 }
 
 // Simplifica a exibição de elementos da página
 function showItem(item) {
-  if (item.style.display == "flex") {
-    item.hidden = false;
-  } else {
-    item.style.display = "block";
-    item.classList.remove("startHidden");
-  }
+  item.style.display = item.getAttribute("display") || "block";
+  item.classList.remove("startHidden");
 }
 
 // Simplifica a remoção de elementos da página
 function hideItem(item) {
-  if (item.style.display == "flex") {
-    item.hidden = true;
-  } else {
-    item.style.display = "none";
-  }
+  item.hidden = true;
+  item.style.display = "none";
 }
 
 // Variável que recebe a função de deslogar dentro do arquivo firebase.js
@@ -63,6 +63,9 @@ function showUserContent(user) {
     emailVerified.innerHTML = "E-mail não verificado";
     showItem(sendEmailVerificationPanel);
   }
+
+  userImg.src = user.photoURL || './img/unknownUser.png';
+  userName.innerHTML = user.displayName;
   userEmail.innerHTML = user.email;
   hideItem(authContent);
   showItem(userContent);
@@ -77,5 +80,16 @@ function showAuth() {
   showItem(authContent);
 }
 
-// Variável que a função de sendEmailVerification do firebase
+// Variável que recebe a função de sendEmailVerification do firebase
 var enviarEmailDeVerificacao;
+
+// Atributos extras de configuração de e-mail
+var actionCodeSettings = {
+  url: "http://127.0.0.1:5500",
+};
+
+// Variável que recebe a função de reset de email do firebase
+var enviarEmailDeResetDeSenha;
+
+// Variável que reebe a função de autenticação pelo Google
+var loginComGoogle;

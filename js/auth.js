@@ -5,9 +5,14 @@ import {
   onAuthStateChanged,
   signOut,
   sendEmailVerification,
+  sendPasswordResetEmail,
+  signInWithPopup,
+  signInWithRedirect,
+  GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
 const auth = getAuth();
+auth.languageCode = "pt-BR";
 
 // Função que trata a submissão do formulário de autenticação
 authForm.onsubmit = async (event) => {
@@ -62,14 +67,43 @@ deslogar = async () => {
 enviarEmailDeVerificacao = async () => {
   showItem(loading);
   try {
-    const auth = getAuth();
     const user = auth.currentUser;
+    await sendEmailVerification(user, actionCodeSettings);
 
-    await sendEmailVerification(user);
-
-    alert(`E-mail de verificação foi enviado para ${user.email}!
-    \nVerifique sua caixa de entrada`);
+    alert(
+      `E-mail de verificação foi enviado para ${user.email}!\nVerifique sua caixa de entrada`
+    );
   } catch (error) {
+    alert(error.message);
+  } finally {
+    hideItem(loading);
+  }
+};
+
+//Função que permite a redefinição de senha do usuário
+enviarEmailDeResetDeSenha = async () => {
+  showItem(loading);
+  try {
+    const email = prompt("Informe seu e-mail cadastrado no TodoList_firebase");
+    await sendPasswordResetEmail(auth, email, actionCodeSettings);
+    alert(
+      `Caso tenha conta cadastrada, um e-mail de redefinição de senha enviado para ${email}`
+    );
+  } catch (error) {
+    alert(error.message);
+  } finally {
+    hideItem(loading);
+  }
+};
+
+// Função que permite a autenticação pelo Google
+loginComGoogle = async () => {
+  showItem(loading);
+  try {
+    const googleProvider = new GoogleAuthProvider();
+    await signInWithRedirect(auth, googleProvider);
+  } catch (error) {
+    console.log(error)
     alert(error.message);
   } finally {
     hideItem(loading);
