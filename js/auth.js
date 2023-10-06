@@ -8,7 +8,9 @@ import {
   sendPasswordResetEmail,
   signInWithPopup,
   signInWithRedirect,
-  GoogleAuthProvider
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+  GithubAuthProvider
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
 const auth = getAuth();
@@ -46,7 +48,7 @@ authForm.onsubmit = async (event) => {
 // Função que centraliza e trata a autenticação
 onAuthStateChanged(auth, (user) => {
   hideItem(loading);
-
+  console.log(user)
   if (user) {
     showUserContent(user);
   } else {
@@ -102,6 +104,33 @@ loginComGoogle = async () => {
   try {
     const googleProvider = new GoogleAuthProvider();
     await signInWithRedirect(auth, googleProvider);
+  } catch (error) {
+    console.log(error)
+    alert(error.message);
+  } finally {
+    hideItem(loading);
+  }
+};
+
+// Função que permite a autenticação pelo Facebook
+loginComFacebook = async () => {
+  showItem(loading);
+  try {
+    const facebookAuthProvider = new FacebookAuthProvider();
+    await signInWithRedirect(auth, facebookAuthProvider);
+  } catch (error) {
+    alert(error.message);
+  } finally {
+    hideItem(loading);
+  }
+};
+
+// Função que permite a autenticação pelo Github
+loginComGithub = async () => {
+  showItem(loading);
+  try {
+    const githubAuthProvider = new GithubAuthProvider();
+    await signInWithRedirect(auth, githubAuthProvider);
   } catch (error) {
     console.log(error)
     alert(error.message);

@@ -14,7 +14,7 @@ var sendEmailVerificationPanel = document.getElementById(
 );
 var passwordReset = document.getElementById("passwordReset");
 var userImg = document.getElementById("userImg");
-var userName = document.getElementById("userName")
+var userName = document.getElementById("userName");
 
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
@@ -56,7 +56,7 @@ var deslogar;
 // Mostrar conteúdo para usuários autenticados
 function showUserContent(user) {
   console.log(user);
-  if (user.emailVerified) {
+  if (user.emailVerified || user.providerData[0].providerId !== "password") {
     emailVerified.innerHTML = "E-mail verificado";
     hideItem(sendEmailVerificationPanel);
   } else {
@@ -64,7 +64,7 @@ function showUserContent(user) {
     showItem(sendEmailVerificationPanel);
   }
 
-  userImg.src = user.photoURL || './img/unknownUser.png';
+  userImg.src = user.photoURL || "./img/unknownUser.png";
   userName.innerHTML = user.displayName;
   userEmail.innerHTML = user.email;
   hideItem(authContent);
@@ -93,3 +93,9 @@ var enviarEmailDeResetDeSenha;
 
 // Variável que reebe a função de autenticação pelo Google
 var loginComGoogle;
+
+// Variável que recebe a função de autenticação pelo Facebook
+var loginComFacebook;
+
+// Variável que recebe a função de autenticação pelo Github
+var loginComGithub;
