@@ -15,6 +15,12 @@
         <div class="center">
             <img src="./img/todoList.png">
         </div>
+
+        <!-- Feedback de carregamento (Loading) -->
+        <div id="loading">
+            <img src="./img/loading.gif" alt="Animação de carregamento" >
+        </div>
+
         <!-- Conteúdo destinado para usuários não autenticados -->
         <div id="auth" class="center">
             <!-- Formulário de autenticação -->
@@ -29,7 +35,7 @@
                     <label for="password">Senha: </label>
                     <input type="password" placeholder="Senha" id="password">
                 </div>
-                <div id="authFormPassordConfirm" class="inputAlign startHidden">
+                <div id="authFormPassordConfirm" class="inputAlign startHidden" hidden>
                     <label for="password" >Confirme sua senha: </label>
                     <input type="password" placeholder="Confirme sua senha" id="passwordConfirm" >
                 </div>
@@ -45,10 +51,20 @@
             </p>
 
             <!-- Alternar o formulário de autenticação para o acesso de contas já existentes -->
-            <p id="access" class="startHidden">
+            <p id="access" class="startHidden" hidden>
                 Já possui uma conta?
                 <button onclick="toggleToAccess()" class="alternative">Acesse a sua conta</button>
             </p>
+        </div>
+
+        <!-- Conteúdo destinado para usuários autenticados -->
+        <div id="userContent">
+            <hr>
+            <div id="userInfo" class="center">
+                <p>Usuário está autenticado</p>
+                <p id="userEmail"></p>
+                <button id="signOutButton" class="alternative" onclick=deslogar()>Sair</button>
+            </div>
         </div>
     </div>
 
