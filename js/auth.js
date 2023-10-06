@@ -10,7 +10,8 @@ import {
   signInWithRedirect,
   GoogleAuthProvider,
   FacebookAuthProvider,
-  GithubAuthProvider
+  GithubAuthProvider,
+  updateProfile
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
 const auth = getAuth();
@@ -130,11 +131,28 @@ loginComGithub = async () => {
   showItem(loading);
   try {
     const githubAuthProvider = new GithubAuthProvider();
-    await signInWithRedirect(auth, githubAuthProvider);
+    await signInWithPopup(auth, githubAuthProvider);
   } catch (error) {
-    console.log(error)
     alert(error.message);
   } finally {
     hideItem(loading);
   }
 };
+
+// Função que permite atualizar nomes de usuários
+atualizarNomeUsuario = async () => {
+  const novoNome = prompt('Informe um novo nome de usuário.', userName.innerHTML);
+  if(novoNome) {
+    showItem(loading);
+    try{
+      userName.innerHTML = novoNome;
+      await updateProfile(auth.currentUser, {
+        displayName: novoNome
+      });
+    } catch(error) {
+      alert(error.message);
+    } finally {
+      hideItem(loading);
+    }
+  }
+}

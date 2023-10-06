@@ -99,3 +99,6 @@ var loginComFacebook;
 
 // Variável que recebe a função de autenticação pelo Github
 var loginComGithub;
+
+// Variável que recebe a função de atualizar nome do usuário no firebase
+var atualizarNomeUsuario;
