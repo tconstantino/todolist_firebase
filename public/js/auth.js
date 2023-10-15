@@ -50,7 +50,6 @@ authForm.onsubmit = async (event) => {
 // Função que centraliza e trata a autenticação
 onAuthStateChanged(auth, (user) => {
   hideItem(loading);
-  console.log(user);
   if (user) {
     showUserContent(user);
   } else {
@@ -105,7 +104,7 @@ loginComGoogle = async () => {
   showItem(loading);
   try {
     const googleProvider = new GoogleAuthProvider();
-    await signInWithRedirect(auth, googleProvider);
+    await signInWithPopup(auth, googleProvider);
   } catch (error) {
     showError(`Falha ao autenticar com Google`, error);
   } finally {

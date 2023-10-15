@@ -46,7 +46,6 @@
             id="authFormPassordConfirm"
             class="inputAlign startHidden"
             display="flex"
-            hidden
           >
             <label for="password">Confirme sua senha: </label>
             <input
@@ -74,7 +73,7 @@
         </p>
 
         <!-- Alternar o formulário de autenticação para o acesso de contas já existentes -->
-        <p id="access" class="startHidden" hidden>
+        <p id="access" class="startHidden">
           Já possui uma conta?
           <button onclick="toggleToAccess()" class="alternative">
             Acesse a sua conta
@@ -127,12 +126,24 @@
             Excluir conta
           </button>
         </div>
+
+        <div class="center">
+          <!-- Formulário de tarefas -->
+          <form id="todoForm">
+            <h3 id="todoFormTitle">Adicionar tarefa:</h3>
+            <label for="name">Tarefa: </label>
+            <input type="text" id="name" placeholder="Tarefa">
+            <button type="submit" id="todoFormSubmit">Adicionar tarefa</button>
+          </form>
+        </div>
       </div>
+
     </div>
 
     <!-- Programação em JavaScript -->
     <script src="./js/utils.js"></script>
     <script type="module" src="./js/firebase.js"></script>
     <script type="module" src="./js/auth.js"></script>
+    <script type="module" src="./js/todo.js"></script>
   </body>
 </html>

@@ -55,7 +55,6 @@ var deslogar;
 
 // Mostrar conteúdo para usuários autenticados
 function showUserContent(user) {
-  console.log(user);
   if (user.emailVerified || user.providerData[0].providerId !== "password") {
     emailVerified.innerHTML = "E-mail verificado";
     hideItem(sendEmailVerificationPanel);
