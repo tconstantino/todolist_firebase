@@ -29,7 +29,8 @@ todoForm.onsubmit = async (event) => {
   if (!name) return alert("Tarefa não pode estar vazia!");
 
   try {
-    const data = { name };
+    const nameLowerCase = name.toLowerCase();
+    const data = { name, nameLowerCase };
 
     await push(child(dbRefUsers, getUserUid()), data);
 
@@ -58,7 +59,8 @@ atualizarTarefa = async (key, name) => {
   if (!newTaskName) return alert("Nome da tarefa não pode estar vazio!");
 
   try {
-    const data = { name:  newTaskName };
+    const nameLowerCase = newTaskName.toLowerCase();
+    const data = { name:  newTaskName, nameLowerCase };
 
     await update(child(dbRefUsers, `${getUserUid()}/${key}`), data);
   } catch (error) {
@@ -68,9 +70,9 @@ atualizarTarefa = async (key, name) => {
 
 buscar = async () => {
   const user = auth.currentUser;
-  const filtro = search.value;
+  const filtro = search.value.toLowerCase();
   const snapshot = await get(query(child(dbRefUsers, user.uid),
-    orderByChild('name'),
+    orderByChild('nameLowerCase'),
     startAt(filtro),
     endAt(filtro + 'utf8ff')));
   fillTodoList(snapshot, snapshot.size);
