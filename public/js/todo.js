@@ -3,6 +3,8 @@ import {
   ref,
   child,
   push,
+  remove,
+  update,
   get,
   set,
   onValue
@@ -25,13 +27,38 @@ todoForm.onsubmit = async (event) => {
 
   try {
     const data = { name };
-    console.log('Tentando salvar', getUserUid());
+
     await push(child(dbRefUsers, getUserUid()), data);
 
     todoForm.name.value = '';
   } catch (error) {
-    console.log("Error", error);
     showError('Falha ao adicionar tarefa', error);
   }
 };
 
+// Função que realiza a exclusão da tarefa no firebase
+deletarTarefa = async (key, name) => {
+  const confirmation = confirm(`Deseja realemnte excluir a tarefa "${name}"?`);
+  if(confirmation) {
+    try {
+      await remove(child(dbRefUsers, `${getUserUid()}/${key}`));
+    } catch (error) {
+      showError('Falha ao excluir tarefa', error);
+    }
+  }
+}
+
+// Função que realiza a atualização da tarefa no firebase
+atualizarTarefa = async (key, name) => {
+  const newTaskName = prompt('Informe o novo nome para a tarefa.', name);
+
+  if (!newTaskName) return alert("Nome da tarefa não pode estar vazio!");
+
+  try {
+    const data = { name:  newTaskName };
+    
+    await update(child(dbRefUsers, `${getUserUid()}/${key}`), data);
+  } catch (error) {
+    showError('Falha ao atualizar tarefa', error);
+  }
+}

@@ -96,3 +96,25 @@ p {
 .danger {
     background-color: #c44;
 }
+
+ul {
+   list-style-type: none;
+   padding: 0;
+}
+
+li {
+    padding: 8px;
+}
+
+li:hover {
+    background-color: #ddd;
+    border-radius: 8px;
+}
+
+.todoButton {
+    float: right;
+    margin: 0 0 0 4px;
+    position: relative;
+    bottom: 6px;
+    height: 30px;
+}

@@ -131,13 +131,30 @@ var fillTodoList = (dados, qtd) => {
   tasksTodoList.innerHTML = '';
   todoCount.innerHTML = `${qtd} tarefa(s)`;
   dados.forEach((dado) => {
-    console.log('dado', dado)
     const tarefa = dado.val();
     const li = document.createElement('li');
     const span = document.createElement('span');
 
+    const deleteButton = document.createElement('button');
+    deleteButton.appendChild(document.createTextNode('Excluir'));
+    deleteButton.setAttribute('onclick', `deletarTarefa('${dado.key}', '${tarefa.name}')`);
+    deleteButton.setAttribute('class', 'danger todoButton');
+
+    const editButton = document.createElement('button');
+    editButton.appendChild(document.createTextNode('Editar'));
+    editButton.setAttribute('onclick', `atualizarTarefa('${dado.key}', '${tarefa.name}')`);
+    editButton.setAttribute('class', 'alternative todoButton');
+
     span.appendChild(document.createTextNode(tarefa.name));
     li.appendChild(span);
+    li.appendChild(deleteButton);
+    li.appendChild(editButton);
     tasksTodoList.appendChild(li);
   });
 };
+
+// Variável que recebe a função de excluir no firebase
+var deletarTarefa;
+
+// Variável que recebe a função de atualizar no firebase
+var atualizarTarefa;
