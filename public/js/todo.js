@@ -5,26 +5,28 @@ import {
   push,
   get,
   set,
+  onValue
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
-// import { firebase } from "./firebase";
+import { auth } from "./auth.js"
 
 const database = getDatabase();
 const dbRefUsers = ref(database, "users");
 
+const getUserUid = () => {
+  return auth.currentUser ? auth.currentUser.uid : '';
+}
+
 todoForm.onsubmit = async (event) => {
   // Evita o redirecionamento da página
   event.preventDefault();
-  console.log(dbRefUsers);
   const name = todoForm.name.value;
 
   if (!name) return alert("Tarefa não pode estar vazia!");
 
   try {
     const data = { name };
-    const user = getAuth().currentUser;
-
-    await push(child(dbRefUsers, user.uid), data);
+    console.log('Tentando salvar', getUserUid());
+    await push(child(dbRefUsers, getUserUid()), data);
 
     todoForm.name.value = '';
   } catch (error) {
@@ -32,3 +34,4 @@ todoForm.onsubmit = async (event) => {
     showError('Falha ao adicionar tarefa', error);
   }
 };
+

@@ -14,9 +14,12 @@ import {
   updateProfile,
   deleteUser,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+import { getDatabase, onValue, child, ref } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
 
 const auth = getAuth();
 auth.languageCode = "pt-BR";
+
+export { auth };
 
 // Função que trata a submissão do formulário de autenticação
 authForm.onsubmit = async (event) => {
@@ -52,6 +55,11 @@ onAuthStateChanged(auth, (user) => {
   hideItem(loading);
   if (user) {
     showUserContent(user);
+
+    // Escuta lista de tarefas no realtime database
+    const database = getDatabase();
+    const dbRefUsers = ref(database, "users");
+    onValue(child(dbRefUsers, user.uid), (snapshot) => fillTodoList(snapshot, snapshot.size));
   } else {
     showAuth();
   }

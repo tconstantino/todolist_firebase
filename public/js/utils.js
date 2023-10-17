@@ -15,6 +15,8 @@ var sendEmailVerificationPanel = document.getElementById(
 var passwordReset = document.getElementById("passwordReset");
 var userImg = document.getElementById("userImg");
 var userName = document.getElementById("userName");
+var todoCount = document.getElementById("todoCount");
+var tasksTodoList = document.getElementById("tasksTodoList");
 
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
@@ -107,18 +109,35 @@ var excluirConta;
 
 // Objeto de mapeamento de erros
 var errorMap = {
-    'auth/invalid-email': 'E-mail e/ou senha inválidos',
-    'auth/wrong-password': 'E-mail e/ou senha inválidos',
-    'auth/weak-password': 'Senha deve ter pelo menos 6 caracteres',
-    'auth/email-already-in-use': 'E-mail já está em uso por outra conta',
-    'auth/popup-closed-by-user': 'O popup de autenticação foi fechado antes da operação ser concluída',
+  "auth/invalid-email": "E-mail e/ou senha inválidos",
+  "auth/wrong-password": "E-mail e/ou senha inválidos",
+  "auth/weak-password": "Senha deve ter pelo menos 6 caracteres",
+  "auth/email-already-in-use": "E-mail já está em uso por outra conta",
+  "auth/popup-closed-by-user":
+    "O popup de autenticação foi fechado antes da operação ser concluída",
 };
 
 // Função que centraliza e traduz os erros no firebase
 function showError(context, error) {
-    console.log(error);
+  console.log(error);
 
-    const mensagemDeErro = error.code ? errorMap[error.code] : error.message;
+  const mensagemDeErro = error.code ? errorMap[error.code] : error.message;
 
-    alert(`${context}: ${mensagemDeErro}`);
+  alert(`${context}: ${mensagemDeErro}`);
 }
+
+// Exibe a lista de tarefas do usuário
+var fillTodoList = (dados, qtd) => {
+  tasksTodoList.innerHTML = '';
+  todoCount.innerHTML = `${qtd} tarefa(s)`;
+  dados.forEach((dado) => {
+    console.log('dado', dado)
+    const tarefa = dado.val();
+    const li = document.createElement('li');
+    const span = document.createElement('span');
+
+    span.appendChild(document.createTextNode(tarefa.name));
+    li.appendChild(span);
+    tasksTodoList.appendChild(li);
+  });
+};
