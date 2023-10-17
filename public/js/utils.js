@@ -17,6 +17,7 @@ var userImg = document.getElementById("userImg");
 var userName = document.getElementById("userName");
 var todoCount = document.getElementById("todoCount");
 var tasksTodoList = document.getElementById("tasksTodoList");
+var search = document.getElementById("search");
 
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
@@ -111,17 +112,20 @@ var excluirConta;
 var errorMap = {
   "auth/invalid-email": "E-mail e/ou senha inválidos",
   "auth/wrong-password": "E-mail e/ou senha inválidos",
+  "auth/invalid-login-credentials": "E-mail e/ou senha inválidos",
   "auth/weak-password": "Senha deve ter pelo menos 6 caracteres",
   "auth/email-already-in-use": "E-mail já está em uso por outra conta",
   "auth/popup-closed-by-user":
     "O popup de autenticação foi fechado antes da operação ser concluída",
+  "PERMISSION_DENIED": "Acesso não permitido!!!"
 };
 
 // Função que centraliza e traduz os erros no firebase
 function showError(context, error) {
   console.log(error);
+  console.log('code', error.code)
 
-  const mensagemDeErro = error.code ? errorMap[error.code] : error.message;
+  const mensagemDeErro = (error.code && errorMap[error.code]) ? errorMap[error.code] : error.message;
 
   alert(`${context}: ${mensagemDeErro}`);
 }
@@ -158,3 +162,6 @@ var deletarTarefa;
 
 // Variável que recebe a função de atualizar no firebase
 var atualizarTarefa;
+
+// Variável que recebe a função de busca no firebase
+var buscar;

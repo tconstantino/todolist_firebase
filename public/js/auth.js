@@ -14,7 +14,7 @@ import {
   updateProfile,
   deleteUser,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
-import { getDatabase, onValue, child, ref } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+import { getDatabase, onValue, child, ref, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
 
 const auth = getAuth();
 auth.languageCode = "pt-BR";
@@ -59,7 +59,8 @@ onAuthStateChanged(auth, (user) => {
     // Escuta lista de tarefas no realtime database
     const database = getDatabase();
     const dbRefUsers = ref(database, "users");
-    onValue(child(dbRefUsers, user.uid), (snapshot) => fillTodoList(snapshot, snapshot.size));
+    const consulta = query(child(dbRefUsers, user.uid), orderByChild('name'));
+    onValue(consulta, (snapshot) => fillTodoList(snapshot, snapshot.size));
   } else {
     showAuth();
   }

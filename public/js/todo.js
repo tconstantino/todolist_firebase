@@ -6,8 +6,11 @@ import {
   remove,
   update,
   get,
-  set,
-  onValue
+  startAt,
+  endAt,
+  query,
+  orderByValue,
+  orderByChild
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
 import { auth } from "./auth.js"
 
@@ -56,9 +59,19 @@ atualizarTarefa = async (key, name) => {
 
   try {
     const data = { name:  newTaskName };
-    
+
     await update(child(dbRefUsers, `${getUserUid()}/${key}`), data);
   } catch (error) {
     showError('Falha ao atualizar tarefa', error);
   }
+}
+
+buscar = async () => {
+  const user = auth.currentUser;
+  const filtro = search.value;
+  const snapshot = await get(query(child(dbRefUsers, user.uid),
+    orderByChild('name'),
+    startAt(filtro),
+    endAt(filtro + 'utf8ff')));
+  fillTodoList(snapshot, snapshot.size);
 }
