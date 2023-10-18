@@ -117,37 +117,44 @@ var errorMap = {
   "auth/email-already-in-use": "E-mail já está em uso por outra conta",
   "auth/popup-closed-by-user":
     "O popup de autenticação foi fechado antes da operação ser concluída",
-  "PERMISSION_DENIED": "Acesso não permitido!!!"
+  PERMISSION_DENIED: "Acesso não permitido!!!",
 };
 
 // Função que centraliza e traduz os erros no firebase
 function showError(context, error) {
   console.log(error);
-  console.log('code', error.code)
+  console.log("code", error.code);
 
-  const mensagemDeErro = (error.code && errorMap[error.code]) ? errorMap[error.code] : error.message;
+  const mensagemDeErro =
+    error.code && errorMap[error.code] ? errorMap[error.code] : error.message;
 
   alert(`${context}: ${mensagemDeErro}`);
 }
 
 // Exibe a lista de tarefas do usuário
 var fillTodoList = (dados, qtd) => {
-  tasksTodoList.innerHTML = '';
+  tasksTodoList.innerHTML = "";
   todoCount.innerHTML = `${qtd} tarefa(s)`;
   dados.forEach((dado) => {
     const tarefa = dado.val();
-    const li = document.createElement('li');
-    const span = document.createElement('span');
+    const li = document.createElement("li");
+    const span = document.createElement("span");
 
-    const deleteButton = document.createElement('button');
-    deleteButton.appendChild(document.createTextNode('Excluir'));
-    deleteButton.setAttribute('onclick', `deletarTarefa('${dado.key}', '${tarefa.name}')`);
-    deleteButton.setAttribute('class', 'danger todoButton');
+    const deleteButton = document.createElement("button");
+    deleteButton.appendChild(document.createTextNode("Excluir"));
+    deleteButton.setAttribute(
+      "onclick",
+      `deletarTarefa('${dado.key}', '${tarefa.name}')`
+    );
+    deleteButton.setAttribute("class", "danger todoButton");
 
-    const editButton = document.createElement('button');
-    editButton.appendChild(document.createTextNode('Editar'));
-    editButton.setAttribute('onclick', `atualizarTarefa('${dado.key}', '${tarefa.name}')`);
-    editButton.setAttribute('class', 'alternative todoButton');
+    const editButton = document.createElement("button");
+    editButton.appendChild(document.createTextNode("Editar"));
+    editButton.setAttribute(
+      "onclick",
+      `atualizarTarefa('${dado.key}', '${tarefa.name}')`
+    );
+    editButton.setAttribute("class", "alternative todoButton");
 
     span.appendChild(document.createTextNode(tarefa.name));
     li.appendChild(span);

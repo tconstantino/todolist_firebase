@@ -14,7 +14,14 @@ import {
   updateProfile,
   deleteUser,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
-import { getDatabase, onValue, child, ref, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+import {
+  getDatabase,
+  onValue,
+  child,
+  ref,
+  query,
+  orderByChild,
+} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
 
 const auth = getAuth();
 auth.languageCode = "pt-BR";
@@ -33,10 +40,10 @@ authForm.onsubmit = async (event) => {
   let context;
   try {
     if (authForm.authFormSubmit.innerHTML == "Acessar") {
-      context = 'autenticar';
+      context = "autenticar";
       await signInWithEmailAndPassword(auth, email, password);
     } else {
-      context = 'cadastrar';
+      context = "cadastrar";
       if (password !== passwordConfirm) {
         throw new Error("Senha e Confirmação da senha estão diferentes!");
       }
@@ -59,7 +66,7 @@ onAuthStateChanged(auth, (user) => {
     // Escuta lista de tarefas no realtime database
     const database = getDatabase();
     const dbRefUsers = ref(database, "users");
-    const consulta = query(child(dbRefUsers, user.uid), orderByChild('name'));
+    const consulta = query(child(dbRefUsers, user.uid), orderByChild("name"));
     onValue(consulta, (snapshot) => fillTodoList(snapshot, snapshot.size));
   } else {
     showAuth();
@@ -176,7 +183,7 @@ excluirConta = async () => {
     showItem(loading);
     try {
       await deleteUser(auth.currentUser);
-      alert('Sua conta foi excluída com sucesso');
+      alert("Sua conta foi excluída com sucesso");
     } catch (error) {
       showError(`Falha ao excluir conta`, error);
     } finally {

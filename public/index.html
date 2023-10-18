@@ -107,7 +107,7 @@
       <div id="userContent">
         <hr />
         <div id="userInfo" class="center">
-          <img id="userImg" src="./img/unknownUser.png"/>
+          <img id="userImg" src="./img/unknownUser.png" />
           <p id="userName"></p>
           <p id="userEmail"></p>
           <p id="emailVerified"></p>
@@ -116,42 +116,56 @@
               Verificar e-mail
             </button>
           </div>
-          <button id="updateName" class="alternative" onclick="atualizarNomeUsuario()">
+          <button
+            id="updateName"
+            class="alternative"
+            onclick="atualizarNomeUsuario()"
+          >
             Atualizar meu nome
           </button>
           <button id="signOutButton" class="alternative" onclick="deslogar()">
             Sair
           </button>
-          <button id="deleteUserAccount" class="danger" onclick="excluirConta()">
+          <button
+            id="deleteUserAccount"
+            class="danger"
+            onclick="excluirConta()"
+          >
             Excluir conta
           </button>
         </div>
 
-        <hr>
+        <hr />
 
         <!-- Lista de tarefas do usuário -->
         <div id="todoList">
           <h3 id="todoCount">Carregando tarefas...</h3>
           <div class="center">
             <label for="search">Buscar: </label>
-            <input type="text" id="search" onkeyup="buscar()">
+            <input type="text" id="search" onkeyup="buscar()" />
           </div>
           <ul id="tasksTodoList"></ul>
         </div>
 
-        <hr>
+        <hr />
 
         <div class="center">
           <!-- Formulário de tarefas -->
           <form id="todoForm">
             <h3 id="todoFormTitle">Adicionar tarefa:</h3>
-            <label for="name">Tarefa: </label>
-            <input type="text" id="name" placeholder="Tarefa">
+            <div>
+              <label for="name">Tarefa: </label>
+              <input type="text" id="name" placeholder="Tarefa" />
+            </div>
+            <div>
+              <label for="file">Figura: </label>
+              <input type="file" name="img" id="file" value="upload" />
+            </div>
+
             <button type="submit" id="todoFormSubmit">Adicionar tarefa</button>
           </form>
         </div>
       </div>
-
     </div>
 
     <!-- Programação em JavaScript -->
