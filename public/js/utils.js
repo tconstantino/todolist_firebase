@@ -21,6 +21,8 @@ var search = document.getElementById("search");
 var progressFeedback = document.getElementById("progressFeedback");
 var progress = document.getElementById("progress");
 var progressPercentual = document.getElementById("progressPercentual");
+var playPauseUpload = document.getElementById("playPauseUpload");
+var cancelUpload = document.getElementById("cancelUpload");
 
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {

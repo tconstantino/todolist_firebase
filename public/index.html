@@ -159,7 +159,7 @@
             </div>
             <div>
               <label for="file">Figura: </label>
-              <input type="file" name="img" id="file" value="upload" />
+              <input type="file" name="img" id="file" value="upload" accept="image/*" />
             </div>
 
             <button type="submit" id="todoFormSubmit">Adicionar tarefa</button>
@@ -167,6 +167,8 @@
           <div id="progressFeedback" class="startHidden">
             <progress id="progress" max="100"></progress>
             <span id="progressPercentual"></span>
+            <button id="playPauseUpload" class="alternative">Pausar</button>
+            <button id="cancelUpload" class="danger">Cancelar</button>
           </div>
         </div>
       </div>
