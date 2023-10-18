@@ -18,6 +18,9 @@ var userName = document.getElementById("userName");
 var todoCount = document.getElementById("todoCount");
 var tasksTodoList = document.getElementById("tasksTodoList");
 var search = document.getElementById("search");
+var progressFeedback = document.getElementById("progressFeedback");
+var progress = document.getElementById("progress");
+var progressPercentual = document.getElementById("progressPercentual");
 
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
