@@ -122,7 +122,7 @@ var errorMap = {
   "auth/email-already-in-use": "E-mail já está em uso por outra conta",
   "auth/popup-closed-by-user":
     "O popup de autenticação foi fechado antes da operação ser concluída",
-  "PERMISSION_DENIED": "Acesso não permitido!!!",
+  PERMISSION_DENIED: "Acesso não permitido!!!",
   "storage/canceled": "Upload cancelado pelo usuário",
 };
 
@@ -145,6 +145,8 @@ var fillTodoList = (dados, qtd) => {
     const tarefa = dado.val();
     const li = document.createElement("li");
     const span = document.createElement("span");
+    const img = document.createElement("img");
+    img.setAttribute("class", "imgTodo");
 
     const deleteButton = document.createElement("button");
     deleteButton.appendChild(document.createTextNode("Excluir"));
@@ -162,7 +164,10 @@ var fillTodoList = (dados, qtd) => {
     );
     editButton.setAttribute("class", "alternative todoButton");
 
+    img.src = tarefa.imageURL || "./img/defaultTodo.png";
     span.appendChild(document.createTextNode(tarefa.name));
+
+    li.appendChild(img);
     li.appendChild(span);
     li.appendChild(deleteButton);
     li.appendChild(editButton);
