@@ -49,9 +49,10 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     match /todoListFiles/{uid}/{allPaths=**} {
-      allow read, write: if request.auth.uid == uid
-        && request.resource.size <= 1024 * 1024 * 10
+      allow write: if request.auth.uid == uid
+        && request.resource.size < 1024 * 1024 * 10
         && request.resource.contentType.matches('image/.*');
+      allow read: if request.auth.uid == uid;
       allow delete: if request.auth.uid == uid
     }
   }
