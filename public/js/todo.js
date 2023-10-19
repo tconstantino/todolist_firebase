@@ -9,7 +9,6 @@ import {
   startAt,
   endAt,
   query,
-  orderByValue,
   orderByChild,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
 import {
@@ -17,6 +16,7 @@ import {
   ref as storageRef,
   uploadBytesResumable,
   getDownloadURL,
+  deleteObject,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-storage.js";
 import { auth } from "./auth.js";
 
@@ -32,52 +32,15 @@ todoForm.onsubmit = async (event) => {
   // Evita o redirecionamento da página
   event.preventDefault();
 
-  const name = todoForm.name.value;
-
-  if (!name)
-    return showError(
-      "Falha ao cadastrar tarefa",
-      new Error("Tarefa não pode estar vazia!")
-    );
-
-  try {
-    const file = todoForm.file.files[0];
-    let fileURL;
-
-    if (file) {
-      if (!file.type.includes("image")) {
-        return showError(
-          "Falha ao cadastrar tarefa",
-          new Error("O arquivo selecionado precisa ser uma imagem.")
-        );
-      }
-      const imageName = `${new Date().toISOString()}_${file.name}`;
-      const imagePath = `todoListFiles/${getUserUid()}/${imageName}`;
-
-      const fileStorageRef = storageRef(storage, imagePath);
-      const uploadTask = uploadBytesResumable(fileStorageRef, file);
-
-      fileURL = await uploadTrack(uploadTask);
-    }
-
-    const nameLowerCase = name.toLowerCase();
-    const data = { name, nameLowerCase };
-
-    if (fileURL) data.imageURL = fileURL;
-
-    await push(child(dbRefUsers, getUserUid()), data);
-
-    clearTodoForm();
-  } catch (error) {
-    showError("Falha ao adicionar tarefa", error);
-  }
+  salvarTarefa();
 };
 
 // Função que realiza a exclusão da tarefa no firebase
-deletarTarefa = async (key, name) => {
-  const confirmation = confirm(`Deseja realemnte excluir a tarefa "${name}"?`);
+deletarTarefa = async (key, name, imgURL) => {
+  const confirmation = confirm(`Deseja realmente excluir a tarefa "${name}"?`);
   if (confirmation) {
     try {
+      await excluirImagemNoStorage(imgURL);
       await remove(child(dbRefUsers, `${getUserUid()}/${key}`));
     } catch (error) {
       showError("Falha ao excluir tarefa", error);
@@ -86,19 +49,15 @@ deletarTarefa = async (key, name) => {
 };
 
 // Função que realiza a atualização da tarefa no firebase
-atualizarTarefa = async (key, name) => {
-  const newTaskName = prompt("Informe o novo nome para a tarefa.", name);
+atualizarTarefa = async (key, name, imgURL) => {
+  habilitarDesabilitarBotaoCancelarAtualizacao(true);
+  updateTodoKey = key;
+  updateTodoImgURL = imgURL;
+  todoFormTitle.innerHTML = `<strong>Editar a tarefa: </strong>${name}`;
+  todoForm.name.value = name;
 
-  if (!newTaskName) return alert("Nome da tarefa não pode estar vazio!");
-
-  try {
-    const nameLowerCase = newTaskName.toLowerCase();
-    const data = { name: newTaskName, nameLowerCase };
-
-    await update(child(dbRefUsers, `${getUserUid()}/${key}`), data);
-  } catch (error) {
-    showError("Falha ao atualizar tarefa", error);
-  }
+  hideItem(todoFormSubmit);
+  showItem(updateTodo);
 };
 
 buscar = async () => {
@@ -120,6 +79,9 @@ const clearTodoForm = () => {
   todoForm.name.value = "";
   todoForm.file.value = null;
   progressPercentual.innerHTML = "";
+  updateTodoKey = null;
+  updateTodoImgURL = null;
+  todoFormTitle.innerHTML = `Adicionar tarefa:`;
 };
 
 const uploadTrack = (uploadTask) => {
@@ -153,18 +115,17 @@ const uploadTrack = (uploadTask) => {
       uploadCompleted
     );
 
-      const pausarUpload = () => {
-        uploadTask.pause();
-        uploadIsPaused = true;
-        playPauseUpload.innerHTML = "Continuar";
-      };
+    const pausarUpload = () => {
+      uploadTask.pause();
+      uploadIsPaused = true;
+      playPauseUpload.innerHTML = "Continuar";
+    };
 
-      const continuarUpload = () => {
-        uploadTask.resume();
-        uploadIsPaused = false;
-        playPauseUpload.innerHTML = "Pausar";
-      }
-
+    const continuarUpload = () => {
+      uploadTask.resume();
+      uploadIsPaused = false;
+      playPauseUpload.innerHTML = "Pausar";
+    };
 
     playPauseUpload.onclick = () => {
       if (uploadIsPaused) continuarUpload();
@@ -173,7 +134,72 @@ const uploadTrack = (uploadTask) => {
 
     cancelUpload.onclick = () => {
       continuarUpload();
-      uploadTask.cancel(); 
+      uploadTask.cancel();
     };
   });
+};
+
+const excluirImagemNoStorage = async (imgURL) => {
+  if (!imgURL) return;
+  try {
+    const fileStorageRef = storageRef(storage, imgURL);
+
+    await deleteObject(fileStorageRef);
+  } catch (error) {
+    showError("Falha ao excluir imagem", error);
+  }
+};
+
+cancelTodoUpdate = () => {
+  clearTodoForm();
+
+  hideItem(updateTodo);
+  showItem(todoForm.todoFormSubmit);
+};
+
+confirmTodoUpdate = async () => {
+  habilitarDesabilitarBotaoCancelarAtualizacao(false);
+  salvarTarefa(true);
+};
+
+const salvarTarefa = async (isUpdate) => {
+  const name = todoForm.name.value;
+
+  if (!name) throw new Error("Tarefa não pode estar vazia!");
+
+  try {
+    const file = todoForm.file.files[0];
+    let fileURL;
+
+    if (file) {
+      if (!file.type.includes("image")) {
+        throw new Error("O arquivo selecionado precisa ser uma imagem.");
+      }
+
+      const imageName = `${new Date().toISOString()}_${file.name}`;
+      const imagePath = `todoListFiles/${getUserUid()}/${imageName}`;
+
+      const fileStorageRef = storageRef(storage, imagePath);
+      const uploadTask = uploadBytesResumable(fileStorageRef, file);
+
+      fileURL = await uploadTrack(uploadTask);
+    }
+
+    const nameLowerCase = name.toLowerCase();
+    const imageURL = fileURL || null;
+    const data = { name, nameLowerCase, imageURL };
+
+    if (isUpdate) {
+      await excluirImagemNoStorage(updateTodoImgURL);
+      await update(child(dbRefUsers, `${getUserUid()}/${updateTodoKey}`), data);
+    } else {
+      await push(child(dbRefUsers, getUserUid()), data);
+    }
+
+    clearTodoForm();
+    hideItem(updateTodo);
+    showItem(todoForm.todoFormSubmit);
+  } catch (error) {
+    showError("Falha ao salvar tarefa", error);
+  }
 };

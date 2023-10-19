@@ -23,6 +23,8 @@ var progress = document.getElementById("progress");
 var progressPercentual = document.getElementById("progressPercentual");
 var playPauseUpload = document.getElementById("playPauseUpload");
 var cancelUpload = document.getElementById("cancelUpload");
+var updateTodo = document.getElementById("updateTodo");
+var cancelUpdate = document.getElementById("cancelUpdate");
 
 // Alterar o formulário de autenticação para o cadastro de novas contas
 function toggleToRegister() {
@@ -148,11 +150,13 @@ var fillTodoList = (dados, qtd) => {
     const img = document.createElement("img");
     img.setAttribute("class", "imgTodo");
 
+    const functionParams = `'${dado.key}', '${tarefa.name}', '${tarefa.imageURL || ''}'`;
+
     const deleteButton = document.createElement("button");
     deleteButton.appendChild(document.createTextNode("Excluir"));
     deleteButton.setAttribute(
       "onclick",
-      `deletarTarefa('${dado.key}', '${tarefa.name}')`
+      `deletarTarefa(${functionParams})`
     );
     deleteButton.setAttribute("class", "danger todoButton");
 
@@ -160,11 +164,17 @@ var fillTodoList = (dados, qtd) => {
     editButton.appendChild(document.createTextNode("Editar"));
     editButton.setAttribute(
       "onclick",
-      `atualizarTarefa('${dado.key}', '${tarefa.name}')`
+      `atualizarTarefa(${functionParams})`
     );
     editButton.setAttribute("class", "alternative todoButton");
 
-    img.src = tarefa.imageURL || "./img/defaultTodo.png";
+    if (tarefa.imageURL) {
+      img.src = tarefa.imageURL;
+      img.onclick = () => window.open(tarefa.imageURL);
+    } else {
+      img.src = "./img/defaultTodo.png";
+    }
+
     span.appendChild(document.createTextNode(tarefa.name));
 
     li.appendChild(img);
@@ -183,3 +193,20 @@ var atualizarTarefa;
 
 // Variável que recebe a função de busca no firebase
 var buscar;
+
+// Variável que recebe a função de confirmar update
+var confirmTodoUpdate;
+
+// Variável que recebe a função de cancelar o update
+var cancelTodoUpdate;
+
+// Variável global para armazenar a key da tarefa a ser atualizada
+var updateTodoKey = null;
+
+// Variável global para armazenar a imgURL da tarefa a ser atualizada
+var updateTodoImgURL = null;
+
+function habilitarDesabilitarBotaoCancelarAtualizacao(estado) {
+  cancelUpdate.disabled = !estado;
+  cancelUpdate.style.opacity = cancelUpdate.disabled ? 0.3 : '';
+}

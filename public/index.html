@@ -161,9 +161,15 @@
               <label for="file">Figura: </label>
               <input type="file" name="img" id="file" value="upload" accept="image/*" />
             </div>
-
-            <button type="submit" id="todoFormSubmit">Adicionar tarefa</button>
+            <button type="submit" display="initial" id="todoFormSubmit">Adicionar tarefa</button>
           </form>
+
+          <div id="updateTodo" class="startHidden">
+            <button onclick="confirmTodoUpdate()">Confirmar modificação</button>
+            <button id="cancelUpdate" disabled onclick="cancelTodoUpdate()" class="danger">Cancelar modificação</button>
+          </div>
+
+
           <div id="progressFeedback" class="startHidden">
             <progress id="progress" max="100"></progress>
             <span id="progressPercentual"></span>

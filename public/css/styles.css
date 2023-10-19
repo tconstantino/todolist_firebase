@@ -129,3 +129,7 @@ span {
     position: relative;
     bottom: 6px;
 }
+
+.disabled {
+    opacity: 0.3;
+}
