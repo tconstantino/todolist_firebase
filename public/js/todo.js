@@ -163,11 +163,11 @@ confirmTodoUpdate = async () => {
 };
 
 const salvarTarefa = async (isUpdate) => {
-  const name = todoForm.name.value;
-
-  if (!name) throw new Error("Tarefa não pode estar vazia!");
-
   try {
+    const name = todoForm.name.value;
+
+    if (!name) throw new Error("Tarefa não pode estar vazia!");
+
     const file = todoForm.file.files[0];
     let fileURL;
 
@@ -175,6 +175,10 @@ const salvarTarefa = async (isUpdate) => {
       if (!file.type.includes("image")) {
         throw new Error("O arquivo selecionado precisa ser uma imagem.");
       }
+
+      const dezMB = 1024 * 1024 * 10;
+      if (file.size > dezMB)
+        throw new Error("A imagem não pode ter mais que 10MB");
 
       const imageName = `${new Date().toISOString()}_${file.name}`;
       const imagePath = `todoListFiles/${getUserUid()}/${imageName}`;
