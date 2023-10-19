@@ -122,7 +122,8 @@ var errorMap = {
   "auth/email-already-in-use": "E-mail já está em uso por outra conta",
   "auth/popup-closed-by-user":
     "O popup de autenticação foi fechado antes da operação ser concluída",
-  PERMISSION_DENIED: "Acesso não permitido!!!",
+  "PERMISSION_DENIED": "Acesso não permitido!!!",
+  "storage/canceled": "Upload cancelado pelo usuário",
 };
 
 // Função que centraliza e traduz os erros no firebase

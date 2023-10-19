@@ -40,31 +40,34 @@ todoForm.onsubmit = async (event) => {
       new Error("Tarefa não pode estar vazia!")
     );
 
-  const file = todoForm.file.files[0];
-  if (file) {
-    if (file.type.includes("image")) {
+  try {
+    const file = todoForm.file.files[0];
+    let fileURL;
+
+    if (file) {
+      if (!file.type.includes("image")) {
+        return showError(
+          "Falha ao cadastrar tarefa",
+          new Error("O arquivo selecionado precisa ser uma imagem.")
+        );
+      }
       const imageName = `${new Date().toISOString()}_${file.name}`;
       const imagePath = `todoListFiles/${getUserUid()}/${imageName}`;
 
       const fileStorageRef = storageRef(storage, imagePath);
       const uploadTask = uploadBytesResumable(fileStorageRef, file);
 
-      uploadTrack(uploadTask);
-    } else {
-      return showError(
-        "Falha ao cadastrar tarefa",
-        new Error("O arquivo selecionado precisa ser uma imagem.")
-      );
+      fileURL = await uploadTrack(uploadTask);
     }
-  }
 
-  try {
     const nameLowerCase = name.toLowerCase();
     const data = { name, nameLowerCase };
 
+    if (fileURL) data.imageURL = fileURL;
+
     await push(child(dbRefUsers, getUserUid()), data);
 
-    if(!file) clearTodoForm();
+    clearTodoForm();
   } catch (error) {
     showError("Falha ao adicionar tarefa", error);
   }
@@ -120,45 +123,57 @@ const clearTodoForm = () => {
 };
 
 const uploadTrack = (uploadTask) => {
-  let uploadIsPaused = false;
+  return new Promise((resolve, reject) => {
+    let uploadIsPaused = false;
 
-  const uploadProgress = (snapshot) => {
-    const uploadProgress =
-      (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    const uploadProgress = (snapshot) => {
+      const uploadProgress =
+        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
 
-    showItem(progressFeedback);
-    progress.value = uploadProgress;
-    progressPercentual.innerHTML = Math.round(uploadProgress) + "%";
-  };
+      showItem(progressFeedback);
+      progress.value = uploadProgress;
+      progressPercentual.innerHTML = Math.round(uploadProgress) + "%";
+    };
 
-  const uploadError = (error) => {
-    if (error.code != "storage/canceled") showError("Falha no upload", error);
+    const uploadError = (error) => {
+      hideItem(progressFeedback);
+      reject(error);
+    };
 
-    hideItem(progressFeedback);
-    clearTodoForm();
-  };
+    const uploadCompleted = async () => {
+      const fileURL = await getDownloadURL(uploadTask.snapshot.ref);
+      hideItem(progressFeedback);
+      resolve(fileURL);
+    };
 
-  const uploadCompleted = async () => {
-    const fileURL = await getDownloadURL(uploadTask.snapshot.ref);
-    hideItem(progressFeedback);
-    clearTodoForm();
+    uploadTask.on(
+      "state_changed",
+      uploadProgress,
+      uploadError,
+      uploadCompleted
+    );
 
-    console.log("file URL", fileURL);
-  };
+      const pausarUpload = () => {
+        uploadTask.pause();
+        uploadIsPaused = true;
+        playPauseUpload.innerHTML = "Continuar";
+      };
 
-  uploadTask.on("state_changed", uploadProgress, uploadError, uploadCompleted);
+      const continuarUpload = () => {
+        uploadTask.resume();
+        uploadIsPaused = false;
+        playPauseUpload.innerHTML = "Pausar";
+      }
 
-  playPauseUpload.onclick = () => {
-    if (uploadIsPaused) {
-      uploadTask.resume();
-      uploadIsPaused = false;
-      playPauseUpload.innerHTML = "Pausar";
-    } else {
-      uploadTask.pause();
-      uploadIsPaused = true;
-      playPauseUpload.innerHTML = "Continuar";
-    }
-  };
 
-  cancelUpload.onclick = () => uploadTask.cancel();
+    playPauseUpload.onclick = () => {
+      if (uploadIsPaused) continuarUpload();
+      else pausarUpload();
+    };
+
+    cancelUpload.onclick = () => {
+      continuarUpload();
+      uploadTask.cancel(); 
+    };
+  });
 };
