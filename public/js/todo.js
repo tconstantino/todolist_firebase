@@ -30,6 +30,8 @@ import {
   getDocs,
   startAt as startAtFirestore,
   endAt as endAtFirestore,
+  deleteDoc,
+  updateDoc,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 import { auth } from "./auth.js";
 
@@ -51,12 +53,18 @@ todoForm.onsubmit = async (event) => {
 };
 
 // Função que realiza a exclusão da tarefa no firebase
-deletarTarefa = async (key, name, imgURL) => {
+deletarTarefa = async (id, name, imgURL) => {
   const confirmation = confirm(`Deseja realmente excluir a tarefa "${name}"?`);
   if (confirmation) {
     try {
       await excluirImagemNoStorage(imgURL);
-      await remove(child(dbRefUsers, `${getUserUid()}/${key}`));
+
+      await deleteDoc(
+        doc(doc(firestoreUserCollection, getUserUid()), "tarefas", id)
+      );
+
+      // REALTIME DATABASE
+      // await remove(child(dbRefUsers, `${getUserUid()}/${key}`));
     } catch (error) {
       showError("Falha ao excluir tarefa", error);
     }
@@ -88,9 +96,6 @@ buscar = async () => {
 
     const snapshot = await getDocs(consultaFirestore);
 
-      console.log('snap consulta', snapshot)
-
-
     fillTodoList(snapshot);
   } catch (error) {
     showError("Falha ao realizar consulta", error);
@@ -105,8 +110,6 @@ buscar = async () => {
   //     endAt(filtro + "utf8ff")
   //   )
   // );
-
-  
 };
 
 const clearTodoForm = () => {
@@ -176,7 +179,7 @@ const uploadTrack = (uploadTask) => {
 // Função que escuta lista de tarefas no realtime database
 escutarListaDeTarefas = () => {
   const consultaFirestore = queryFirestore(
-    collection(firestoreUserCollection, getUserUid(), "tarefas"),
+    collection(doc(firestoreUserCollection, getUserUid()), "tarefas"),
     orderBy("nameLowerCase")
   );
 
@@ -247,7 +250,18 @@ const salvarTarefa = async (isUpdate) => {
 
     if (isUpdate) {
       await excluirImagemNoStorage(updateTodoImgURL);
-      await update(child(dbRefUsers, `${getUserUid()}/${updateTodoKey}`), data);
+
+      updateDoc(
+        doc(
+          doc(firestoreUserCollection, getUserUid()),
+          "tarefas",
+          updateTodoKey
+        ),
+        data
+      );
+
+      // UPDATE REALTIME DATABASE
+      // await update(child(dbRefUsers, `${getUserUid()}/${updateTodoKey}`), data);
     } else {
       await addDoc(
         collection(doc(firestoreUserCollection, getUserUid()), "tarefas"),
