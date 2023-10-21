@@ -10,6 +10,7 @@ import {
   endAt,
   query,
   orderByChild,
+  onValue,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
 import {
   getStorage,
@@ -18,11 +19,25 @@ import {
   getDownloadURL,
   deleteObject,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-storage.js";
+import {
+  getFirestore,
+  collection,
+  doc,
+  addDoc,
+  query as queryFirestore,
+  orderBy,
+  onSnapshot,
+  getDocs,
+  startAt as startAtFirestore,
+  endAt as endAtFirestore,
+} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 import { auth } from "./auth.js";
 
 const database = getDatabase();
 const storage = getStorage();
+const firestore = getFirestore();
 const dbRefUsers = ref(database, "users");
+const firestoreUserCollection = collection(firestore, "users");
 
 const getUserUid = () => {
   return auth.currentUser.uid;
@@ -61,18 +76,37 @@ atualizarTarefa = async (key, name, imgURL) => {
 };
 
 buscar = async () => {
-  const user = auth.currentUser;
-  const filtro = search.value.toLowerCase();
-  const snapshot = await get(
-    query(
-      child(dbRefUsers, user.uid),
-      orderByChild("nameLowerCase"),
-      startAt(filtro),
-      endAt(filtro + "utf8ff")
-    )
-  );
+  try {
+    const filtro = search.value.toLowerCase();
 
-  fillTodoList(snapshot, snapshot.size);
+    const consultaFirestore = queryFirestore(
+      collection(firestoreUserCollection, getUserUid(), "tarefas"),
+      orderBy("nameLowerCase"),
+      startAtFirestore(filtro),
+      endAtFirestore(filtro + "utf8ff")
+    );
+
+    const snapshot = await getDocs(consultaFirestore);
+
+      console.log('snap consulta', snapshot)
+
+
+    fillTodoList(snapshot);
+  } catch (error) {
+    showError("Falha ao realizar consulta", error);
+  }
+
+  // REALTIME DATABASE
+  // const snapshot = await get(
+  //   query(
+  //     child(dbRefUsers, user.uid),
+  //     orderByChild("nameLowerCase"),
+  //     startAt(filtro),
+  //     endAt(filtro + "utf8ff")
+  //   )
+  // );
+
+  
 };
 
 const clearTodoForm = () => {
@@ -139,6 +173,24 @@ const uploadTrack = (uploadTask) => {
   });
 };
 
+// Função que escuta lista de tarefas no realtime database
+escutarListaDeTarefas = () => {
+  const consultaFirestore = queryFirestore(
+    collection(firestoreUserCollection, getUserUid(), "tarefas"),
+    orderBy("nameLowerCase")
+  );
+
+  onSnapshot(consultaFirestore, (snapshot) => {
+    fillTodoList(snapshot);
+  });
+
+  // REALTIME DATABASE
+  // const consulta = query(child(dbRefUsers, getUserUid()), orderByChild("nameLowerCase"));
+  // onValue(consulta, (snapshot) => {
+  //   fillTodoList(snapshot, snapshot.size);
+  // });
+};
+
 const excluirImagemNoStorage = async (imgURL) => {
   if (!imgURL) return;
   try {
@@ -197,7 +249,13 @@ const salvarTarefa = async (isUpdate) => {
       await excluirImagemNoStorage(updateTodoImgURL);
       await update(child(dbRefUsers, `${getUserUid()}/${updateTodoKey}`), data);
     } else {
-      await push(child(dbRefUsers, getUserUid()), data);
+      await addDoc(
+        collection(doc(firestoreUserCollection, getUserUid()), "tarefas"),
+        data
+      );
+
+      // INSERT REALTIME DATABASE
+      //await push(child(dbRefUsers, getUserUid()), data);
     }
 
     clearTodoForm();

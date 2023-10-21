@@ -63,11 +63,7 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     showUserContent(user);
 
-    // Escuta lista de tarefas no realtime database
-    const database = getDatabase();
-    const dbRefUsers = ref(database, "users");
-    const consulta = query(child(dbRefUsers, user.uid), orderByChild("name"));
-    onValue(consulta, (snapshot) => fillTodoList(snapshot, snapshot.size));
+    escutarListaDeTarefas();
   } else {
     showAuth();
   }

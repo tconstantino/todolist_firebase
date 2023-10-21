@@ -124,7 +124,7 @@ var errorMap = {
   "auth/email-already-in-use": "E-mail já está em uso por outra conta",
   "auth/popup-closed-by-user":
     "O popup de autenticação foi fechado antes da operação ser concluída",
-  PERMISSION_DENIED: "Acesso não permitido!!!",
+  "PERMISSION_DENIED": "Acesso não permitido!!!",
   "storage/canceled": "Upload cancelado pelo usuário",
 };
 
@@ -140,17 +140,17 @@ function showError(context, error) {
 }
 
 // Exibe a lista de tarefas do usuário
-var fillTodoList = (dados, qtd) => {
+var fillTodoList = (snapshot) => {
   tasksTodoList.innerHTML = "";
-  todoCount.innerHTML = `${qtd} tarefa(s)`;
-  dados.forEach((dado) => {
-    const tarefa = dado.val();
+  todoCount.innerHTML = `${snapshot.size} tarefa(s)`;
+  snapshot.forEach((dado) => {
+    const tarefa = dado.data();
     const li = document.createElement("li");
     const span = document.createElement("span");
     const img = document.createElement("img");
     img.setAttribute("class", "imgTodo");
 
-    const functionParams = `'${dado.key}', '${tarefa.name}', '${tarefa.imageURL || ''}'`;
+    const functionParams = `'${dado.id}', '${tarefa.name}', '${tarefa.imageURL || ''}'`;
 
     const deleteButton = document.createElement("button");
     deleteButton.appendChild(document.createTextNode("Excluir"));
@@ -210,3 +210,6 @@ function habilitarDesabilitarBotaoCancelarAtualizacao(estado) {
   cancelUpdate.disabled = !estado;
   cancelUpdate.style.opacity = cancelUpdate.disabled ? 0.3 : '';
 }
+
+// Variável que recebe a função que escuta a lista de tarefas no realtime database
+var escutarListaDeTarefas;
