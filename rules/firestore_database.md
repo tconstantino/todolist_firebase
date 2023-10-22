@@ -30,3 +30,14 @@ service cloud.firestore {
     }
   }
 }
+
+# Acesso restrito aos donos dos dados
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid}/{document=**} {
+      allow read, write, delete: if request.auth.uid == uid
+    }
+  }
+}
